@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}Add User{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-cintent-center">
+        <div class="col-mid-8">
+            <div class="card shadow">
+                <div class="card-header custom-bg text-white">
+                    <h2 class="mb-0">Add New User</h2>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <input type="text" class="form-control" id="designation" name="designation">
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="employee">Employee</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Add User</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

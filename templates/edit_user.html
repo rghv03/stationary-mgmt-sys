@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Edit User{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header custom-bg text-white">
+                    <h4 class="mb-0">Edit User</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
+                        </div>
+                         <div class="mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <input type="text" class="form-control" id="department" name="department" value="{{ user.department }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <input type="text" class="form-control" id="designation" name="designation" value="{{ user.designation }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-select" id="role" name="role" required>
+                                <option value="employee" {% if user.role == 'employee' %}selected{% endif %}>Employee</option>
+                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                                <option value="superadmin" {% if user.role == 'superadmin' %}selected{% endif %}>Superadmin</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Update User</button>
+                        </div>
+                    </form>
+                    <a href="/manage_users" class="btn btn-secondary mt-3">Back to User List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}My Requests{% endblock %}
+{% block body %}
+<h2 class="mt-5">My Request History</h2>
+<table class="table table-bordered mt-5 table-striped">
+    <thead class="table-bordered table-dark">
+        <tr>
+            <th style="text-align: center;">Sr. No.</th>
+            <th style="text-align: center;">Item</th>
+            <th style="text-align: center;">Quantity</th>
+            <th style="text-align: center;">Remarks</th>
+            <th style="text-align: center;">Date Requested</th>
+            <th style="text-align: center;">Status</th>
+            <td style="text-align: center;">Quantity Issued</td>
+        </tr>
+    </thead>
+    <tbody>
+        {% for req in requests %}
+        <tr>
+           <td style="text-align: center;">{{ loop.index }}</td>
+            <td style="text-align: center;">{{ req.item }}</td>
+            <td style="text-align: center;">{{ req.quantity }}</td>
+            <td style="text-align: center;">{{ req.remarks }}</td>
+            <td style="text-align: center;">{{ req.date_requested.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td style="text-align: center;">
+                {% if req.status == 'Approved' %}
+                    <span class = "text-success">Approved</span>
+                {% elif  req.status == 'Rejected' %}  
+                    <span class="text-danger">Rejected</span>
+                {% else %}
+                    <span class="text-warning">Pending</span>
+                {% endif %}
+            </td>
+            <td style="text-align: center;">{{ req.quantity_issued or '-' }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% if not requests %}
+<div class="aler alert-info text-center">You have not made any Request till now. </div>
+{% endif %}
+{% endblock %}

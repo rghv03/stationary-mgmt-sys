@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}Employee Dashboard{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header custom-bg text-white">
+                    <h4 class="mb-0">Request Stationary</h4>
+                </div>
+                <div class="card-body">
+                    <form action='/employee' method = 'POST' class="bordered p-4 rounded shadow">
+                        <div class="mb-3">
+                        <label for="item" >Item name</label><br>
+                        <select id="item" name="item" class="form-select" required>
+                            <option value="">--Select items</option>
+                            {% for item in items %}
+                            <option value="{{ item }}">{{item}}</option>
+                            {% endfor %}
+                        </select>
+                        <br><br>
+                        </div>
+                        <div class="mb-3">
+                        <label for="quantity" class="form-label">Quantity</label><br>
+                        <input type="number" min="0" class="form-control" id="quantity" name="quantity" required><br><br>
+                        </div>
+                        <div class="mb-3">
+                        <label for="remarks" class="form-label">Remarks</label><br>
+                        <input type="text" class="form-control" id="remarks" name="remarks" ><br><br>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Submit Request</button>
+                    </form>
+                    {% if show_alert %}
+                    <script>
+                        alert("✅ Request Submitted Successfully!!!")
+                        window.location.href('employee')
+                    </script>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>            
+</div>
+{% endblock %}
