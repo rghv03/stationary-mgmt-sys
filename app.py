@@ -184,9 +184,12 @@ def delete_user(user_id):
     if session.get('role') != 'superadmin':
         return redirect('/login')
     user = User.query.get_or_404(user_id)
-
-    db.session.delete(user)
-    db.session.commit()
+    if user.requests:
+        flash("Cannot delete user who has submitted requests")
+        redirect ('/manage_users')
+    else:
+        db.session.delete(user)
+        db.session.commit()
     flash("User deleted")
     return redirect('/manage_users')
 
