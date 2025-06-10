@@ -19,7 +19,21 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" id="password" class="form-control" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                                <i class="bi bi-eye" id="toggleIcon_confirm_password"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            <div class="input-group">
+                                <input type="password" name="confirm_password" id="confirm_password" class="form-control" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password')">
+                                <i class="bi bi-eye" id="toggleIcon_confirm_password"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="designation" class="form-label">Designation</label>
@@ -30,6 +44,12 @@
                             <input type="text" name="department" id="department" class="form-control" required>
                         </div>
                         <button type="submit" class="btn custom-bg w-100 ">Sign Up</button>
+                        {% if show_alert %}
+                        <script>
+                            alert("❌ Password didn't match")
+                            window.location.href('signup')
+                        </script>
+                        {% endif %}
                         <div class="text-center mt-2">
                             <a href="/login">Already have an account? Log in</a>
                         </div>
@@ -39,4 +59,14 @@
         </div>
     </div>
 </div>
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+  } else {
+    input.type = "password";
+  }
+}
+</script>
 {% endblock %}

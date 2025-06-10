@@ -19,13 +19,31 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="password" name="password" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password')">
+                                <i class="bi bi-eye" id="toggleIcon_confirm_password"></i>
+                                </button>
+                            </div>
                         </div>
-                        <button type="submit" class="btn custom-bg">Login</button>
+                        <button type="submit" class="btn w-100 custom-bg">Login</button>
+                        <div class="text-center mt-2">
+                            <a href="/signup">Don't have an account? Sign Up</a>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<script>
+function togglePassword(id) {
+  const input = document.getElementById(id);
+  if (input.type === "password") {
+    input.type = "text";
+  } else {
+    input.type = "password";
+  }
+}
+</script>
 {% endblock %}
