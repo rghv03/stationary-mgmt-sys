@@ -20,7 +20,7 @@ app.register_blueprint(signup_bp)
 
 @app.route('/')
 def home():
-    return redirect('/login')
+    return redirect('/signup')
 
 #login route
 @app.route('/login',methods=['GET','POST'])
