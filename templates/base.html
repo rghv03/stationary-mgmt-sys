@@ -77,13 +77,16 @@
                     {% if role=='employee' %}
                     <li class="nav-item"><a class="nav-link" href="/employee">Request Items</a></li>
                     <li class="nav-item"><a class="nav-link" href="/view-requests">View Requests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a> </li>
                     {% endif %}
                     {% if role == 'admin' %}
                     <li class="nav-item"><a class="nav-link" href="/admin">Manage Requests</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a> </li>
                     {% endif %}
                     {% if role == 'superadmin' %}
                     <li class="nav-item"><a class="nav-link" href="/manage_requests">Manage All Requests</a></li>
                     <li class="nav-item"><a class="nav-link" href="/manage_users">Manage Users</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/change_password">Change Password</a> </li>
                     {% endif %}
                 </ul>
             </div>
