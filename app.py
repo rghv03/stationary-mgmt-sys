@@ -341,6 +341,35 @@ def employee_dashboard():
     
     return render_template('Emp_dash.html', role = 'employee', items = name_of_items,show_alert = show_alert )
 #employee route end
+#urgent request route
+@app.route('/monthly-requests', methods=['GET','POST'] )
+def monthlyrequests():
+    if 'user_id' not in session or session.get('role') != 'employee':
+        return redirect('/login')
+    if request.method == 'POST':
+        today = datetime.today().day
+        if today < 1 or today >10:
+            flash("Requests can only be submitted within the first 10 days of the month.","danger")
+            return redirect('/monthly-requests')
+        for item in name_of_items:
+            qty = request.form.get(f'qty_{item}')
+            remarks = request.form.get(f'remarks_{item}')
+
+            quantity = int(qty) if qty and qty.isdigit() else 0
+
+            final_remarks = remarks if remarks else '-'
+
+            new_request = RequestModel(
+                user_id = session['user_id'],
+                item =  item,
+                quantity = quantity,
+                remarks = final_remarks
+            )
+            db.session.add(new_request)
+        db.session.commit()
+        flash("Request Submitted ✅","success")
+        return redirect('/monthly-requests')
+    return render_template('monthly_req.html', items = name_of_items,role='employee')
 
 #employee-view-requests
 @app.route('/view-requests')
