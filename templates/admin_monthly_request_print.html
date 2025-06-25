@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Request Print{% endblock %}
+{% block body %}
+<div id="print-section">
+    <div class="container mt-5">
+        <h2>Monthly Stationary Request - {{ req.month }} {{ req.year }}</h2>
+        <p><strong>Requested By:</strong> {{ user.username }}</p>
+        <p><strong>Date:</strong> {{ req.date_requested.strftime('%Y-%m-%d') }}</p>
+        <table class="table table-bordered ">
+            <thead class="table-dark">
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in req.items %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ item.item }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.remarks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+<button type="button" onclick="printTable()" class="btn btn-primary">Print</button>
+<script>
+    var bootstrapCss = "{{url_for('static', filename='css/bootstrap.min.css') }}";
+</script>
+<script>
+    function printTable(){
+        var printContents = document.getElementById('print-section').innerHTML;
+        var win = window.open('', '', 'height=700,width=900');
+        win.document.write('<html><head><title>Print</title>');
+        win.document.write('<link rel="stylesheet" href="{{url_for("static", filename="css/bootstrap.min.css") }}">');
+        win.document.write('</head><body>');
+        win.document.write(printContents);
+        win.document.write('</body></html>');
+        win.document.close();
+        win.focus();
+        win.print();
+        //win.close();
+}
+</script>
+{% endblock %}

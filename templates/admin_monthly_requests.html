@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Requests{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Monthly Stationary Requests</h2>
+    <table class="table table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Sr. No.</th>
+                <th>Date Requested</th>
+                <th>Requested at</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ req.date_requested.strftime('%Y-%m-%d') }}</td>
+                <td>{{ req.date_requested.strftime('%H:%M') }}</td>
+                <td>
+                    <a href="/admin/monthly-request/{{ req.id }}" class="btn btn-sm btn-outline-primary">View/Print</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No monthly requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

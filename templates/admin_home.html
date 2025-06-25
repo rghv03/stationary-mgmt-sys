@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block body %}
+<h2 class="mt-5">Admin Dashboard</h2>
+<div class="row">
+    <div class="col-md-6 mt-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">Urgent Requests</h5>
+                <p class="card-text">Manage urgent requests submitted by employees.</p>
+                <a href="/admin" class="btn custom-bg">Manage Requests</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mt-5">
+        <div class="card shadow">
+            <div class="card-body">
+                <h5 class="card-title">Monthly Request</h5>
+                <p class="card-text">Monthly request for the department.</p>
+                <a href="/monthly-requests" class="btn btn-secondary">Make Request</a>
+                <a href="/admin/monthly-requests-view" class="btn btn-info inline">View Monthly Requests</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

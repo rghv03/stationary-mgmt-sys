@@ -1,6 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session , send_file 
 from werkzeug.security import check_password_hash,generate_password_hash
-from models import User,db, RequestModel
+from models import User,db, RequestModel,MonthlyRequest
 from sqlalchemy import func
 from datetime import datetime
 import pandas as pd
@@ -80,7 +80,7 @@ def dashboard():
     if role == 'superadmin':
         return redirect('/superadmin')
     elif role == 'admin':
-        return redirect('/admin')
+        return redirect('/admin_home')
     elif role == 'employee':
         return redirect('/employee')
     else:
@@ -217,11 +217,81 @@ def delete_user(user_id):
     return redirect('/manage_users')
 
 
+#admin_home route
+@app.route('/admin_home')
+def admin_home():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    return render_template('admin_home.html', role = 'admin')
 
-#admin route
+#items list
+name_of_items = ["Photo Copier paper A-4 Size", "Pencil HB", "Pencil Eraser", "Sharpener", "Scale", "Vim Powder",
+                "Stapler Pin (Big)", "Stapler Pin (Small)", "Stapler Small", "Stapler Big", "Note pad", "Room freshener",
+                "Hit Spray", "Colin Spray", "Envelope (Small)", "Envelope (Big)", "File Cover", "Index Folder",
+                "Ball Pen (Blue)", "Gel Pen", "Tape (Big)", "Tape (Small)", "White Fluid", "Hand Soap", "Dettol Hand wash Liquid", 
+                "Glue Stick", "White Duster", "Yellow Duster", "Glass Tumbler", "High lighter", "Permanent Marker", "C.D", "Noting Sheet",
+                "Dust Bin", "Register (Big)", "Register (Medium)", "Register (Small)", "Color Post-it Pad (Tree Color)",
+                "Post-it Pad (Yellow)", "Peon book", "Hand Towel", "Towel Big", "Scissor", "Single Punch", "Double Punch",
+                "Fevicol", "Gum Bottle", "U Clip", "Inkpad", "Pin Box (cushion)", "Green Tag", "White Tag", "File Binder",
+                "Paper Weight", "Pencil Cell"]
+
+#admin monthly route
+#monthly request route
+@app.route('/monthly-requests', methods=['GET','POST'] )
+def monthlyrequests():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    if request.method == 'POST':
+        # today = datetime.today().day
+        # if today < 1 or today >10:
+        #     flash("Requests can only be submitted within the first 10 days of the month.","danger")
+        #     return redirect('/monthly-requests')
+        items_data = []
+        for item in name_of_items:
+            safe_item = item.replace(' ','_').replace('.','').replace('-','_')
+            qty = request.form.get(f'qty_{safe_item}')
+            remarks = request.form.get(f'remarks_{safe_item}','')
+
+            quantity = int(qty) if qty and qty.isdigit() else 0
+            items_data.append({
+                'item': item,
+                'quantity': quantity,
+                'remarks': remarks if remarks else '-'
+            })
+
+        monthly_req = MonthlyRequest(
+                user_id = session['user_id'],
+                month=datetime.now().strftime('%B'),
+                year = datetime.now().year,
+                items =  items_data,
+                date_requested = datetime.now()    
+        )
+        db.session.add(monthly_req)
+        db.session.commit()
+        flash("Request Submitted ✅","success")
+        return redirect('/monthly-requests')
+    return render_template('monthly_req.html', items = name_of_items,role='admin')
+
+#admin view monthly requests
+@app.route('/admin/monthly-requests-view')
+def admin_monthly_requests_view():
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    monthly_requests = MonthlyRequest.query.filter_by(user_id=session['user_id']).order_by(MonthlyRequest.date_requested.desc()).all()
+    return render_template('admin_monthly_requests.html',requests=monthly_requests, role='admin')
+#admin view/print
+@app.route('/admin/monthly-request/<int:req_id>')
+def admin_view_monthly_request(req_id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    req = MonthlyRequest.query.get_or_404(req_id)
+    return render_template('admin_monthly_request_print.html', req=req ,user=req.user,role ='admin')
+
+
+#admin urgent request route
 @app.route('/admin', methods = ['GET','POST'])
 def admin_dashboard():
-    if 'user_id' not in session or session.get('role') == 'employee':
+    if 'user_id' not in session or session.get('role') != 'admin':
         return redirect('/login')
     if request.method == 'POST':
         req_id = request.form.get('request_id')
@@ -260,7 +330,7 @@ def admin_dashboard():
             print("invalid date")
             invalid_date = True
     
-    requests =  query.all()
+    requests =  query.order_by(RequestModel.date_requested.desc()).all()
     no_results = len(requests) == 0 and not invalid_date
     departments = [d[0] for d in db.session.query(User.department).distinct().all()]
 
@@ -309,16 +379,6 @@ def export_requests():
                       as_attachment = True,
                       mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
 
-#items list
-name_of_items = ["Photo Copier paper A-4 Size", "Pencil HB", "Pencil Eraser", "Sharpener", "Scale", "Vim Powder",
-                "Stapler Pin (Big)", "Stapler Pin (Small)", "Stapler Small", "Stapler Big", "Note pad", "Room freshener",
-                "Hit Spray", "Colin Spray", "Envelope (Small)", "Envelope (Big)", "File Cover", "Index Folder",
-                "Ball Pen (Blue)", "Gel Pen", "Tape (Big)", "Tape (Small)", "White Fluid", "Hand Soap", "Dettol Hand wash Liquid", 
-                "Glue Stick", "White Duster", "Yellow Duster", "Glass Tumbler", "High lighter", "Permanent Marker", "C.D", "Noting Sheet",
-                "Dust Bin", "Register (Big)", "Register (Medium)", "Register (Small)", "Color Post-it Pad (Tree Color)",
-                "Post-it Pad (Yellow)", "Peon book", "Hand Towel", "Towel Big", "Scissor", "Single Punch", "Double Punch",
-                "Fevicol", "Gum Bottle", "U Clip", "Inkpad", "Pin Box (cushion)", "Green Tag", "White Tag", "File Binder",
-                "Paper Weight", "Pencil Cell"]
 
 #employee route
 @app.route('/employee',methods=['GET','POST'])
@@ -341,35 +401,6 @@ def employee_dashboard():
     
     return render_template('Emp_dash.html', role = 'employee', items = name_of_items,show_alert = show_alert )
 #employee route end
-#urgent request route
-@app.route('/monthly-requests', methods=['GET','POST'] )
-def monthlyrequests():
-    if 'user_id' not in session or session.get('role') != 'employee':
-        return redirect('/login')
-    if request.method == 'POST':
-        today = datetime.today().day
-        if today < 1 or today >10:
-            flash("Requests can only be submitted within the first 10 days of the month.","danger")
-            return redirect('/monthly-requests')
-        for item in name_of_items:
-            qty = request.form.get(f'qty_{item}')
-            remarks = request.form.get(f'remarks_{item}')
-
-            quantity = int(qty) if qty and qty.isdigit() else 0
-
-            final_remarks = remarks if remarks else '-'
-
-            new_request = RequestModel(
-                user_id = session['user_id'],
-                item =  item,
-                quantity = quantity,
-                remarks = final_remarks
-            )
-            db.session.add(new_request)
-        db.session.commit()
-        flash("Request Submitted ✅","success")
-        return redirect('/monthly-requests')
-    return render_template('monthly_req.html', items = name_of_items,role='employee')
 
 #employee-view-requests
 @app.route('/view-requests')
