@@ -1,7 +1,7 @@
 from flask import Flask, flash, redirect, render_template, request, session , send_file 
 from werkzeug.security import check_password_hash,generate_password_hash
 from models import User,db, RequestModel,MonthlyRequest
-from sqlalchemy import func
+from sqlalchemy import func,extract
 from datetime import datetime
 import pandas as pd
 from io import BytesIO
@@ -277,8 +277,19 @@ def monthlyrequests():
 def admin_monthly_requests_view():
     if 'user_id' not in session or session.get('role') != 'admin':
         return redirect('/login')
-    monthly_requests = MonthlyRequest.query.filter_by(user_id=session['user_id']).order_by(MonthlyRequest.date_requested.desc()).all()
-    return render_template('admin_monthly_requests.html',requests=monthly_requests, role='admin')
+    user_id = session['user_id']
+    month_year = request.args.get('month_year')
+    selected_month_year = month_year
+    query = MonthlyRequest.query.filter_by(user_id=user_id)
+    if month_year:
+        year, month = month_year.split('-')
+        query = query.filter(
+            func.strftime('%Y', MonthlyRequest.date_requested) == year,
+            func.strftime('%m', MonthlyRequest.date_requested) == month
+        )
+
+    monthly_requests = query.order_by(MonthlyRequest.date_requested.desc()).all()
+    return render_template('admin_monthly_requests.html',requests=monthly_requests, role='admin', selected_month_year=selected_month_year)
 #admin view/print
 @app.route('/admin/monthly-request/<int:req_id>')
 def admin_view_monthly_request(req_id):
