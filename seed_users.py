@@ -13,12 +13,14 @@ def seed_users():
             username='admin1',
             password =generate_password_hash('a123'),
             role= 'admin',
+            designation = 'Technical Officer',
             department = 'Procurement'
         ),
         User(
             username='emp1',
             password =generate_password_hash('e123'),
             role= 'employee',
+            designation = 'Sc B',
             department = 'QRS & IT'
         )
     ]

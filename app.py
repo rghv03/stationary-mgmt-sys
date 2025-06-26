@@ -286,6 +286,36 @@ def admin_view_monthly_request(req_id):
         return redirect('/login')
     req = MonthlyRequest.query.get_or_404(req_id)
     return render_template('admin_monthly_request_print.html', req=req ,user=req.user,role ='admin')
+#admin edit request
+@app.route('/admin/monthly-request/<int:req_id>/edit', methods=['GET','POST'])
+def edit_monthly_req(req_id):
+    if 'user_id' not in session or session.get('role') != 'admin':
+        return redirect('/login')
+    req = MonthlyRequest.query.get_or_404(req_id)
+    show_alert = False
+    if request.method == 'POST':
+        # today = datetime.today().day
+        # if today < 1 or today >10:
+        #     flash("Requests can only be submitted within the first 10 days of the month.","danger")
+        #     return redirect('/monthly-requests')
+        items_data = []
+        for item in name_of_items:
+            safe_item = item.replace(' ','_').replace('.','').replace('-','_')
+            qty = request.form.get(f'qty_{safe_item}')
+            remarks = request.form.get(f'remarks_{safe_item}','')
+
+            quantity = int(qty) if qty and qty.isdigit() else 0
+            items_data.append({
+                'item': item,
+                'quantity': quantity,
+                'remarks': remarks if remarks else '-'
+            })
+        req.items = items_data
+        req.date_requested = datetime.now()
+        db.session.commit()
+        show_alert = True
+    item_dict = {i['item']: i for i in req.items}
+    return render_template('edit_monthly_request.html',show_alert = show_alert, items=name_of_items, req=req, item_dict=item_dict, role='admin')
 
 
 #admin urgent request route

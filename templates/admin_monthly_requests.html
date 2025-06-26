@@ -20,6 +20,7 @@
                 <td>{{ req.date_requested.strftime('%H:%M') }}</td>
                 <td>
                     <a href="/admin/monthly-request/{{ req.id }}" class="btn btn-sm btn-outline-primary">View/Print</a>
+                    <a href="/admin/monthly-request/{{ req.id }}/edit" class="btn btn-sm btn-outline-warning">Edit</a>
                 </td>
             </tr>
             {% else %}

@@ -24,13 +24,22 @@
                 <tr>
                     <td>{{ loop.index }}</td>
                     <td>{{item}}</td>
-                    <td><input type="number" name="qty_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" min="0" class="form-control" placeholder="0" ></td>
-                    <td><input type="text" name="remarks_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" class="form-control" placeholder="remarks" ></td>
+                    <td><input type="number" name="qty_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" min="0" class="form-control"
+                        value="{{ item_dict[item]['quantity'] if item in item_dict else 0}}" ></td>
+                    <td><input type="text" name="remarks_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" class="form-control"
+                        value="{{ item_dict[item]['remarks'] if item in item_dict else '' }}" ></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary">Submit Monthly Request</button>
+        <button type="submit" class="btn btn-primary">Update Request</button>
+        <a href="/admin/monthly-requests-view" class="btn btn-secondary">Cancel</a>
     </form>
+    {% if show_alert %}
+    <script>
+        alert("✅ Monthly Request Updated Successfully!!!");
+        window.location.href = '/admin/monthly-requests-view';
+    </script>
+    {% endif %}
 </div>
 {% endblock %}

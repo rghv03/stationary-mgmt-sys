@@ -4,14 +4,15 @@
 <div id="print-section">
     <div class="container mt-5">
         <h2>Monthly Stationary Request - {{ req.month }} {{ req.year }}</h2>
-        <p><strong>Requested By:</strong> {{ user.username }}</p>
-        <p><strong>Date:</strong> {{ req.date_requested.strftime('%Y-%m-%d') }}</p>
+        <p><strong>Requested By:</strong> {{ user.username }}, {{ user.department }}</p>
+        <p><strong>Date:</strong> {{ req.date_requested.strftime('%d-%m-%Y') }}</p>
         <table class="table table-bordered ">
             <thead class="table-dark">
                 <tr>
                     <th>Sr. No.</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
+                    <th>Name of Items</th>
+                    <th>Quantity Demanded</th>
+                    <th>Quantity Issued</th>
                     <th>Remarks</th>
                 </tr>
             </thead>
@@ -21,11 +22,13 @@
                     <td>{{ loop.index }}</td>
                     <td>{{ item.item }}</td>
                     <td>{{ item.quantity }}</td>
+                    <td></td>
                     <td>{{ item.remarks }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        <p style="text-align: right;"><br><br>{{ user.username }}<br>{{ user.designation }}</p>
     </div>
 </div>
 <button type="button" onclick="printTable()" class="btn btn-primary">Print</button>
@@ -44,7 +47,6 @@
         win.document.close();
         win.focus();
         win.print();
-        //win.close();
 }
 </script>
 {% endblock %}
