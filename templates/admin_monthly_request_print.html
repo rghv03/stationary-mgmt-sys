@@ -4,7 +4,7 @@
 <div id="print-section">
     <div class="container mt-5">
         <h2>Monthly Stationary Request - {{ req.month }} {{ req.year }}</h2>
-        <p><strong>Requested By:</strong> {{ user.username }}, {{ user.department }}</p>
+        <p><strong>Requested By:</strong> {{ user.username }}, {{ user.department.shortname if user.department else '' }}</p>
         <p><strong>Date:</strong> {{ req.date_requested.strftime('%d-%m-%Y') }}</p>
         <table class="table table-bordered ">
             <thead class="table-dark">

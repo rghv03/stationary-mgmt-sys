@@ -1,11 +1,12 @@
 from flask import Flask, flash, redirect, render_template, request, session , send_file 
 from werkzeug.security import check_password_hash,generate_password_hash
-from models import User,db, RequestModel,MonthlyRequest
+from models import User,db, RequestModel,MonthlyRequest,Department
 from sqlalchemy import func,extract
 from datetime import datetime
 import pandas as pd
 from io import BytesIO
 from signup_route import signup_bp
+from flask_migrate import Migrate
 
 
 app = Flask(__name__)
@@ -15,6 +16,8 @@ app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///stationary.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db.init_app(app)
+
+migrate = Migrate(app, db)
 
 app.register_blueprint(signup_bp)
 
@@ -242,10 +245,10 @@ def monthlyrequests():
     if 'user_id' not in session or session.get('role') != 'admin':
         return redirect('/login')
     if request.method == 'POST':
-        # today = datetime.today().day
-        # if today < 1 or today >10:
-        #     flash("Requests can only be submitted within the first 10 days of the month.","danger")
-        #     return redirect('/monthly-requests')
+        today = datetime.today().day
+        if today < 1 or today >10:
+            flash("Requests can only be submitted within the first 10 days of the month.","danger")
+            return redirect('/monthly-requests')
         items_data = []
         for item in name_of_items:
             safe_item = item.replace(' ','_').replace('.','').replace('-','_')
@@ -258,13 +261,14 @@ def monthlyrequests():
                 'quantity': quantity,
                 'remarks': remarks if remarks else '-'
             })
-
+        user = User.query.get(session['user_id'])
         monthly_req = MonthlyRequest(
                 user_id = session['user_id'],
                 month=datetime.now().strftime('%B'),
                 year = datetime.now().year,
                 items =  items_data,
-                date_requested = datetime.now()    
+                date_requested = datetime.now(),
+                department_id = user.department_id  
         )
         db.session.add(monthly_req)
         db.session.commit()
@@ -305,10 +309,10 @@ def edit_monthly_req(req_id):
     req = MonthlyRequest.query.get_or_404(req_id)
     show_alert = False
     if request.method == 'POST':
-        # today = datetime.today().day
-        # if today < 1 or today >10:
-        #     flash("Requests can only be submitted within the first 10 days of the month.","danger")
-        #     return redirect('/monthly-requests')
+        today = datetime.today().day
+        if today < 1 or today >10:
+            flash("Requests can only be submitted within the first 10 days of the month.","danger")
+            return redirect('/monthly-requests')
         items_data = []
         for item in name_of_items:
             safe_item = item.replace(' ','_').replace('.','').replace('-','_')
@@ -385,17 +389,17 @@ def admin_dashboard():
 #export excel route
 @app.route('/admin/export')
 def export_requests():
-    department= request.args.get('department')
+    department_id= request.args.get('department')
     date_str = request.args.get('date')
     status = request.args.get('status')
 
-    query = RequestModel.query.join(User)
+    query = RequestModel.query.join(User).join(Department, User.department_id == Department.id)
 
-    if department:
-        query = query.filter(User.department == department)
+    if department_id:
+        query = query.filter(User.department_id == department_id)
     if status and status!="All":
         query = query.filter(RequestModel.status == status)
-    if date_str:
+    if date_str and date_str.strip():
         try:
             selected_date = datetime.strptime(date_str , '%Y-%m-%d').date()
             query = query.filter(func.date(RequestModel.date_requested) == selected_date)
@@ -452,6 +456,54 @@ def view_employee_requests():
     user_id = session['user_id']
     my_requests= RequestModel.query.filter_by(user_id=user_id).order_by(RequestModel.date_requested.desc()).all()
     return render_template('emp_view_requests.html', requests = my_requests,role='employee')
+
+#ad or head route
+@app.context_processor
+def inject_is_ad_or_head():
+    user_id =  session.get('user_id')
+    is_ad_or_head = False
+    if user_id:
+        is_ad_or_head = Department.query.filter(
+            (Department.head_id == user_id) | (Department.ad_id == user_id)
+        ).first() is not None
+    return dict(is_ad_or_head=is_ad_or_head)
+
+# monthly request for ad or head
+@app.route('/ad/monthly-requests')
+def ad_monthly_requests():
+    if 'user_id' not in session:
+        return redirect('/login')
+    user_id = session.get('user_id')
+    # Get departments where user is AD or Head
+    departments = Department.query.filter(
+        (Department.head_id == user_id) | (Department.ad_id == user_id)
+    ).all()
+    department_ids = [d.id for d in departments]
+    requests = (
+        MonthlyRequest.query
+        .join(User, MonthlyRequest.user_id == User.id)
+        .filter(
+            MonthlyRequest.department_id.in_(department_ids),
+            User.role == 'admin'
+        )
+        .all()
+    )
+    return render_template('ad_monthly_requests.html', requests=requests, role=session.get('role'))
+# ad or head action route
+@app.route('/ad/monthly-request/<int:req_id>/action', methods=['POST'])
+def ad_action_monthly_requests(req_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+    req = MonthlyRequest.query.get_or_404(req_id)
+    action = request.form.get('action')
+    if action == 'approve':
+        req.ad_status = 'Approved'
+    elif action == 'reject':
+        req.ad_status = 'Rejected'
+    db.session.commit()
+    flash("Request Updated.", "success")
+    return redirect('/ad/monthly-requests')
+
 
 if __name__=="__main__" :
     app.run(debug=True)

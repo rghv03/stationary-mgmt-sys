@@ -17,8 +17,9 @@
         <thead class="table-dark">
             <tr>
                 <th>Sr. No.</th>
-                <th>Date Requested</th>
-                <th>Requested at</th>
+                <th>Requested on</th>
+                <th>AD Status</th>
+                <th>Stationary Incharge Status</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -26,8 +27,17 @@
             {% for req in requests %}
             <tr>
                 <td>{{ loop.index }}</td>
-                <td>{{ req.date_requested.strftime('%Y-%m-%d') }}</td>
-                <td>{{ req.date_requested.strftime('%H:%M') }}</td>
+                <td>{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
+                <td>
+                    {% if  req.ad_status == 'Approved' %}  
+                        <span class="text-success">Approved</span>
+                    {% elif  req.ad_status == 'Rejected' %}  
+                        <span class="text-danger">Rejected</span>
+                    {% else %}
+                        <span class="text-warning">Pending</span>
+                    {% endif %}
+                </td>
+                <td></td>
                 <td>
                     <a href="/admin/monthly-request/{{ req.id }}" class="btn btn-sm btn-outline-primary">View/Print</a>
                     <a href="/admin/monthly-request/{{ req.id }}/edit" class="btn btn-sm btn-outline-warning">Edit</a>

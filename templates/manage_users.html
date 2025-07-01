@@ -30,7 +30,7 @@
                     <td>{{ user.username }}</td>
                     <td>{{ user.role }}</td>
                     <td>{{ user.designation }}</td>
-                    <td>{{ user.department }}</td>
+                    <td>{{ user.department.shortname if user.department else ''  }}</td>
                     <td>
                         <a href="/edit_user/{{user.id}}" class="btn btn-sm btn-warning me-2">Edit</a>
                         {% if user.role !='superadmin' %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% block title %}Approve/Reject Monthly Requests{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Monthly Requests for Your Department(s)</h2>
+    <table class="table table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Sr. No.</th>
+                <th>Requested By</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ req.user.username }}</td>
+                <td>{{ req.department.shortname }}</td>
+                <td>{{ req.date_requested.strftime('%d-%m-%Y %H:%M') }}</td>
+                <td>
+                    {% if  req.ad_status == 'Approved' %}  
+                        <span class="text-success">Approved</span>
+                    {% elif  req.ad_status == 'Rejected' %}  
+                        <span class="text-danger">Rejected</span>
+                    {% else %}
+                        <span class="text-warning">Pending</span>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if req.ad_status == 'Pending' %}
+                    <form method="POST" action="/ad/monthly-request/{{ req.id }}/action">
+                        <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                        <button name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                    {% else %}
+                    <span class="text-muted">Action Completed</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
