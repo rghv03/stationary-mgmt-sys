@@ -486,6 +486,7 @@ def ad_monthly_requests():
             MonthlyRequest.department_id.in_(department_ids),
             User.role == 'admin'
         )
+        .order_by(MonthlyRequest.date_requested.desc())
         .all()
     )
     return render_template('ad_monthly_requests.html', requests=requests, role=session.get('role'))
