@@ -31,11 +31,12 @@
                     {% endif %}
                 </td>
                 <td>
+                    <a href="/ad/monthly-request/{{ req.id }}" class="btn btn-outline-info btn-sm">View</a>
                     {% if req.ad_status == 'Pending' %}
-                    <form method="POST" action="/ad/monthly-request/{{ req.id }}/action">
+                    <!-- <form method="POST" action="/ad/monthly-request/{{ req.id }}/action">
                         <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                         <button name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
-                    </form>
+                    </form> -->
                     {% else %}
                     <span class="text-muted">Action Completed</span>
                     {% endif %}

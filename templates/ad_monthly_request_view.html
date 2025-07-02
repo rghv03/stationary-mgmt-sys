@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}Monthly Request Details{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Monthly Request Details</h2>
+    <p><strong>Requested By:</strong> {{ user.username }}</p>
+    <p><strong>Department:</strong> {{ req.department.shortname }}</p>
+    <p><strong>Date:</strong> {{ req.date_requested.strftime('%d-%m-%Y %H:%M') }}</p>
+    <p><strong>Status:</strong> {{ req.ad_status }}</p>
+    <h4>Items Requested:</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sr. No.</th>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Remarks</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in req.items %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ item.item }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.remarks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if req.ad_status == 'Pending' %}
+    <form method="POST" action="/ad/monthly-request/{{ req.id }}/action">
+        <button name="action" value="approve" class="btn btn-success">Approve</button>
+        <button name="action" value="reject" class="btn btn-danger">Reject</button>
+    </form>
+    {% endif %}
+    <a href="/ad/monthly-requests" class="btn btn-secondary mt-3">Back</a>
+</div>
+{% endblock %}

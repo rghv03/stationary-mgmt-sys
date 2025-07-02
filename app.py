@@ -23,7 +23,7 @@ app.register_blueprint(signup_bp)
 
 @app.route('/')
 def home():
-    return redirect('/signup')
+    return redirect('/login')
 
 #login route
 @app.route('/login',methods=['GET','POST'])
@@ -218,7 +218,30 @@ def delete_user(user_id):
         db.session.commit()
     flash("User deleted")
     return redirect('/manage_users')
+#assigning AD or Head
+@app.route('/assign_roles', methods=['GET','POST'])
+def asign_roles():
+    if session.get('role') != 'superadmin':
+        return redirect('/login')
+    departments = Department.query.all()
+    users = User.query.all()
+    message = None
 
+    if request.method == 'POST':
+        dept_id = request.form['department']
+        ad_id = request.form.get('ad_id')
+        head_id = request.form.get('head_id')
+        # incharge_id = request.form.get('stationary_incharge_id')
+
+        dept = Department.query.get(dept_id)
+        if dept:
+            dept.ad_id = ad_id if ad_id else None
+            dept.head_id = head_id if head_id else None
+            # dept.stationary_incharge_id = incharge_id if incharge_id else None
+            db.session.commit()
+            message = "Roles assigned successfully!"
+
+    return render_template('assign_roles.html', departments=departments, users=users, message=message, role='superadmin')
 
 #admin_home route
 @app.route('/admin_home')
@@ -471,7 +494,7 @@ def inject_is_ad_or_head():
 # monthly request for ad or head
 @app.route('/ad/monthly-requests')
 def ad_monthly_requests():
-    if 'user_id' not in session:
+    if 'user_id' not in session or session.get('role') != 'employee':
         return redirect('/login')
     user_id = session.get('user_id')
     # Get departments where user is AD or Head
@@ -504,7 +527,13 @@ def ad_action_monthly_requests(req_id):
     db.session.commit()
     flash("Request Updated.", "success")
     return redirect('/ad/monthly-requests')
-
+#ad request view route
+@app.route('/ad/monthly-request/<int:req_id>')
+def ad_view_monthly_request(req_id):
+    if 'user_id' not in session:
+        return redirect('/login')
+    req = MonthlyRequest.query.get_or_404(req_id)
+    return render_template('ad_monthly_request_view.html', req=req, user=req.user, role=session.get('role'))
 
 if __name__=="__main__" :
     app.run(debug=True)

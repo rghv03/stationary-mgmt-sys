@@ -28,7 +28,20 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% if req.ad_status == 'Approved' %}
+        <div class="row mt-5">
+            <div class="col text-start">
+                <br><strong>AD</strong><br>
+                <strong>{{ user.department.shortname }}</strong>
+            </div>
+        </div>
+        <div class="col text-end">
+            {{ user.username }}<br>
+            {{ user.designation }}
+        </div>
+        {% else %}
         <p style="text-align: right;"><br><br>{{ user.username }}<br>{{ user.designation }}</p>
+        {% endif %}
     </div>
 </div>
 <button type="button" onclick="printTable()" class="btn btn-primary">Print</button>
