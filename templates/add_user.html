@@ -22,7 +22,12 @@
                         </div>
                         <div class="mb-3">
                             <label for="department" class="form-label">Department</label>
-                            <input type="text" class="form-control" id="department" name="department" required>
+                            <select name ="department_id" id="department" class="form-control" required>
+                                <option value="">Select Department</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.id }}">{{ dept.shortname }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="designation" class="form-label">Designation</label>

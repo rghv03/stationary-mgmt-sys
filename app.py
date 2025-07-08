@@ -171,15 +171,16 @@ def manage_users():
 def add_user():
     if session.get('role') != 'superadmin':
         return redirect('/login')
+    departments = Department.query.all()
     if request.method == 'POST':
         username = request.form['username']
         password = generate_password_hash(request.form['password'])
         role = request.form['role']
         designation = request.form['designation']
-        department = request.form['department']
+        department_id = request.form['department_id']
         existing = User.query.filter_by(username=username).first()
         if not existing:
-            user = User(username=username,password=password,role=role,department=department
+            user = User(username=username,password=password,role=role,department_id=department_id
                         ,designation=designation)
             db.session.add(user)
             db.session.commit()
@@ -187,7 +188,7 @@ def add_user():
         else:
             flash("Username already exists")
         return redirect('/manage_users')
-    return render_template('add_user.html',role='superadmin')
+    return render_template('add_user.html',role='superadmin',departments=departments)
 #editing user
 @app.route('/edit_user/<int:user_id>',methods =['GET','POST'] )
 def edit_user(user_id):
