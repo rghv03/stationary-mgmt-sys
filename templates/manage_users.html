@@ -6,7 +6,6 @@
         <h2>User Management</h2>
         <div>
             <a href="/add_user" class="btn  custom-bg me-2" >➕ Add User</a>
-            <a href="/assign_roles" class="btn btn-info" >Assign Role</a>
         </div>
     </div>
     {% with messages = get_flashed_messages() %}
@@ -19,10 +18,11 @@
             <thead class="table-dark">
                 <tr>
                     <th>Id</th>
-                    <th>Username</th>
-                    <th>Role</th>
+                    <th>Name</th>
                     <th>Designation</th>
                     <th>Department</th>
+                    <th>User Role</th>
+                    <th>Department Role</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -30,18 +30,31 @@
                 {% for user in users %}
                 <tr>
                     <td>{{ user.id }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.role }}</td>
+                    <td>{{ user.first_name }} {{ user.middle_name }} {{ user.last_name }}</td>
                     <td>{{ user.designation }}</td>
                     <td>{{ user.department.shortname if user.department else ''  }}</td>
+                    <td>{{ user.role }}</td>
+                    <td>
+                        {% if user.department and user.department.ad_id == user.id %}
+                            Group AD
+                        {% elif user.department and user.department.head_id == user.id %}
+                            Group Head
+                        {% elif user.role == "admin" %}
+                            Group Stationary Incharge
+                        {% elif user.is_lab_stationary %}
+                            Lab Stationary Incharge
+                        {% else %}
+                            None
+                        {% endif %}
+                    </td>
+                    
                     <td>
                         <a href="/edit_user/{{user.id}}" class="btn btn-sm btn-warning me-2">Edit</a>
                         {% if user.role !='superadmin' %}
                         <form action="/delete_user/{{user.id}}" method="POST" style="display: inline;">
                             <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure, you want to delete this user?')">Delete</button>
                         </form>
-                        {% else %}
-                        <span class="text-muted">Not Allowed</span>
+                        
                         {% endif %}
                     </td>
                 </tr>

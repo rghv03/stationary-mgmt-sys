@@ -1,6 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Employee Dashboard{% endblock %}
 {% block body %}
+
+<!--fading welcome employee title -->
+
+<style>
+    .fade-in-welcome {
+        opacity: 0;
+        transition: opacity 1.5s ease-in;
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: left;
+        margin-top: 40px;
+        color: #000000;
+        letter-spacing: 1px;
+        font-family: inherit;
+    }
+    .fade-in-welcome.visible {
+        opacity: 1;
+    }
+</style>
+<div id="welcome-employee" class="fade-in-welcome">
+    Welcome, {{current_user.first_name}} {{current_user.middle_name}} {{current_user.last_name}}
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.getElementById('welcome-employee').classList.add('visible');
+        }, 200); 
+    });
+</script>
+
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8">

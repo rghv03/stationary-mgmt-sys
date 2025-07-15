@@ -7,17 +7,10 @@
 <!-- FILTER -->
 <form method = "GET" class="row mt-5">
     <div class="col-md-3">
-        <label class="form-label">Filter by Department:</label>
+        <label class="form-label">Department:</label>
         <select name="department" class="form-select">
-            <option value="">All</option>
             {% for dept in departments %}
-                <option value="{{dept}}"
-                    {% if selected_dept == dept %}
-                        selected
-                    {% endif %}
-                >
-                    {{ dept }}
-                 </option>
+            <option value=""{% if selected_dept == dept %}selected{% endif %}>{{dept}}</option>
             {% endfor %}
         </select>
     </div>
@@ -61,8 +54,8 @@
             <th style="text-align: center;">Quantity</th>
             <th style="text-align: center;">Remarks</th>
             <th style="text-align: center;">Demanded By</th>
-            <th style="text-align: center;">Department</th>
-            <th style="text-align: center;">Date Requested</th>
+            <th style="text-align: center;">Designation</th>
+            <th style="text-align: center;">Requested On</th>
             <th style="text-align: center;">Status</th>
             <th style="text-align: center;">Quantity Issued</th>
             <th style="text-align: center;">Action</th>
@@ -75,9 +68,9 @@
             <td style="text-align: center;">{{ req.item }}</td>
             <td style="text-align: center;">{{ req.quantity }}</td>
             <td style="text-align: center;">{{ req.remarks }}</td>
-            <td style="text-align: center;">{{ req.user.username }}</td>
-            <td style="text-align: center;">{{ req.user.department.shortname }}</td>
-            <td style="text-align: center;">{{ req.date_requested.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td style="text-align: center;">{{ req.user.first_name  }} {{ req.user.last_name }}</td>
+            <td style="text-align: center;">{{ req.user.designation }}</td>
+            <td style="text-align: center;">{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
             
             <td style="text-align: center;">
                 {% if req.status == 'Approved by Superadmin' %}

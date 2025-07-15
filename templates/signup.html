@@ -13,6 +13,38 @@
                     <div class="alert alert-danger text-center">{{ error }}</div>
                     {% endif %}
                     <form method="POST">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" name="first_name" id="first_name" class="form-control" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="middle_name" class="form-label">Middle Name</label>
+                                <input type="text" name="middle_name" id="middle_name" class="form-control">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" name="last_name" id="last_name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="designation" class="form-label">Designation</label>
+                            <select name ="designation" id="designation" class="form-control" required>
+                                <option value="">Select Designation</option>
+                                {% for des in designations %}
+                                    <option value="{{ des }}">{{ des }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select name ="department_name" id="department" class="form-control" required>
+                                <option value="">Select Department</option>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.shortname }}">{{ dept.shortname }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" name="username" id="username" class="form-control" required>
@@ -34,19 +66,6 @@
                                 <i class="bi bi-eye" id="toggleIcon_confirm_password"></i>
                                 </button>
                             </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="designation" class="form-label">Designation</label>
-                            <input type="text" name="designation" id="designation" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="department" class="form-label">Department</label>
-                            <select name ="department_id" id="department" class="form-control" required>
-                                <option value="">Select Department</option>
-                                {% for dept in departments %}
-                                    <option value="{{ dept.id }}">{{ dept.shortname }}</option>
-                                {% endfor %}
-                            </select>
                         </div>
                         <button type="submit" class="btn custom-bg w-100 ">Sign Up</button>
                         {% if show_alert %}

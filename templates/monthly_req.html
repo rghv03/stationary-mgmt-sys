@@ -13,19 +13,19 @@
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>Sr. No.</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Remarks</th>
+                    <th style="text-align: center;">Sr. No.</th>
+                    <th style="text-align: center;">Name of Items</th>
+                    <th style="text-align: center;">Quantity Demanded</th>
+                    <th style="text-align: center;">Remarks</th>
                 </tr>
             </thead>
             <tbody>
                 {%for item in items %}
                 <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{item}}</td>
-                    <td><input type="number" name="qty_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" min="0" class="form-control" placeholder="0" ></td>
-                    <td><input type="text" name="remarks_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" class="form-control" placeholder="remarks" ></td>
+                    <td style="text-align: center;">{{ loop.index }}</td>
+                    <td style="text-align: center;">{{item}}</td>
+                    <td style="text-align: center;"><input type="number" name="qty_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" min="0" class="form-control" placeholder="0" ></td>
+                    <td style="text-align: center;"><input type="text" name="remarks_{{item|replace(' ','_')|replace('-','_')|replace('.','')}}" class="form-control" placeholder="remarks" ></td>
                 </tr>
                 {% endfor %}
             </tbody>

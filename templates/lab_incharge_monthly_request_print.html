@@ -29,7 +29,7 @@
             </tbody>
         </table>
         <p style="text-align: right;"><br><br>{{ user.first_name }} {{ user.middle_name }} {{ user.last_name }}<br>{{ user.designation }}</p>
-        {% if req.ad_status == 'Approved' %}
+        {% if req.lab_incharge_status == 'Issued' %}
             <div class="col text-start">
                 <strong>AD/Head</strong><br>
                 <strong>{{ user.department.shortname }}</strong>
@@ -55,4 +55,4 @@
         win.print();
 }
 </script>
-{% endblock %}
+{% endblock %} 

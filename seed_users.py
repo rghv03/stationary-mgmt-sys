@@ -1,50 +1,38 @@
-from app import app,db
+from app import create_app
+from extensions import db
 from models import User, Department
 from werkzeug.security import generate_password_hash
-
+app = create_app()
 def seed_users():
 
     procurement = Department.query.filter_by(shortname='Procurement').first()
     qrs_it = Department.query.filter_by(shortname='QRS & IT').first()
-    research = Department.query.filter_by(shortname='Research').first()
-
+    
     users = [
         User(
             username='superadmin',
-            password = generate_password_hash('s123'),
+            password=generate_password_hash('super'),
             role='superadmin',
-            department_id=qrs_it.id 
+            first_name='Super',
+            middle_name='',
+            last_name='Admin',
+            designation="Technical Officer 'B'",
+            department_name=qrs_it.shortname
         ),
         User(
             username='admin1',
-            password =generate_password_hash('a123'),
-            role= 'admin',
-            designation = 'Technical Officer',
-            department_id = procurement.id
+            password=generate_password_hash('admin'),
+            role='admin',
+            first_name='Admin',
+            middle_name='',
+            last_name='One',
+            designation="Technical Officer 'B'",
+            department_name=procurement.shortname
         ),
-        User(
-            username='admin2',
-            password =generate_password_hash('a123'),
-            role= 'admin',
-            designation = 'Technical Officer',
-            department_id = qrs_it.id
-        ),
-        User(
-            username='emp1',
-            password =generate_password_hash('e123'),
-            role= 'employee',
-            designation = 'Sc B',
-            department_id = qrs_it.id
-        ),
-        User(
-            username='emp2',
-            password =generate_password_hash('e123'),
-            role= 'employee',
-            designation = 'Sc B',
-            department_id =  research.id
-        )
     ]
-    
+    User.query.delete()
+    db.session.commit()
+    print("All earlier users deleted")
     db.session.add_all(users)
     db.session.commit()
     print("Users added Succesfully")

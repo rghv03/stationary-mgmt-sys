@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}My Requests{% endblock %}
 {% block body %}
-<h2 class="mt-5">My Request History</h2>
+<h2 class="mt-5">My Urgent Request History</h2>
 <table class="table table-bordered mt-5 table-striped">
     <thead class="table-bordered table-dark">
         <tr>
@@ -11,7 +11,7 @@
             <th style="text-align: center;">Remarks</th>
             <th style="text-align: center;">Date Requested</th>
             <th style="text-align: center;">Status</th>
-            <td style="text-align: center;">Quantity Issued</td>
+            <th style="text-align: center;">Quantity Issued</th>
         </tr>
     </thead>
     <tbody>
@@ -21,7 +21,7 @@
             <td style="text-align: center;">{{ req.item }}</td>
             <td style="text-align: center;">{{ req.quantity }}</td>
             <td style="text-align: center;">{{ req.remarks }}</td>
-            <td style="text-align: center;">{{ req.date_requested.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td style="text-align: center;">{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
             <td style="text-align: center;">
                 {% if req.status == 'Approved' %}
                     <span class = "text-success">Approved</span>

@@ -1,27 +1,25 @@
 {% extends 'base.html' %}
-{% block title %}Approve/Reject Monthly Requests{% endblock %}
+{% block title %}Monthly Requests{% endblock %}
 {% block body %}
 <div class="container mt-5">
-    <h2>Monthly Requests for Your Department(s)</h2>
+    <h2>Monthly Stationary Requests for {{ user.department.shortname }}</h2>
     <table class="table table-bordered mt-4">
         <thead class="table-dark">
             <tr>
-                <th>Sr. No.</th>
-                <th>Requested By</th>
-                <th>Department</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Action</th>
+                <th style="text-align: center;">Sr. No.</th>
+                <th style="text-align: center;">Requested By</th>
+                <th style="text-align: center;">Requested On</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Action</th>
             </tr>
         </thead>
         <tbody>
             {% for req in requests %}
             <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ req.user.username }}</td>
-                <td>{{ req.department.shortname }}</td>
-                <td>{{ req.date_requested.strftime('%d-%m-%Y %H:%M') }}</td>
-                <td>
+                <td style="text-align: center;">{{ loop.index }}</td>
+                <td style="text-align: center;">{{ req.user.first_name }} {{ req.user.middle_name }} {{ req.user.last_name }}</td>
+                <td style="text-align: center;">{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
+                <td style="text-align: center;">
                     {% if  req.ad_status == 'Approved' %}  
                         <span class="text-success">Approved</span>
                     {% elif  req.ad_status == 'Rejected' %}  
@@ -30,14 +28,9 @@
                         <span class="text-warning">Pending</span>
                     {% endif %}
                 </td>
-                <td>
+                <td style="text-align: center;">
                     <a href="/ad/monthly-request/{{ req.id }}" class="btn btn-outline-info btn-sm">View</a>
-                    {% if req.ad_status == 'Pending' %}
-                    <!-- <form method="POST" action="/ad/monthly-request/{{ req.id }}/action">
-                        <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
-                        <button name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
-                    </form> -->
-                    {% else %}
+                    {% if req.ad_status != 'Pending' %}
                     <span class="text-muted">Action Completed</span>
                     {% endif %}
                 </td>

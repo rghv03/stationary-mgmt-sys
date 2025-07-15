@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Lab Incharge Monthly Requests{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Monthly Stationary Requests</h2>
+    <form method="GET" class="row mt-4">
+        <div class="col-md-3">
+        <label class="form-label">Filter by Department:</label>
+        <select name="department" class="form-select">
+            <option value="">All</option>
+            {% for dept in departments %}
+                <option value="{{dept}}"
+                    {% if selected_dept == dept %}selected{% endif %}>
+                    {{ dept }}
+                 </option>
+            {% endfor %}
+        </select>
+    </div>
+        <div class="col-md-3">
+            <label class="form-label">Filter by Month and Year:</label><br>
+            <input type="Month" name="month_year" class="form-control" value="{{ selected_month_year }}">
+        </div>
+        <div class="col-md-2 align-self-end">
+            <button type="submit" class="btn btn-primary">Apply</button>
+            <a href="/lab_incharge/monthly-requests" class="btn btn-secondary ms-2">Clear</a>
+        </div>
+    </form>
+    <table class="table table-bordered mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th style="text-align: center;">Sr. No.</th>
+                <th style="text-align: center;">Requested By</th>
+                <th style="text-align: center;">Department</th>
+                <th style="text-align: center;">Month</th>
+                <th style="text-align: center;">Status</th>
+                <th style="text-align: center;">Requested On</th>
+                <th style="text-align: center;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for req in requests %}
+            <tr>
+                <td style="text-align: center;">{{ loop.index }}</td>
+                <td style="text-align: center;">{{ req.user.first_name }} {{ req.user.last_name }}</td>
+                <td style="text-align: center;">{{ req.department_name }}</td>
+                <td style="text-align: center;">{{ req.month }} {{ req.year }}</td>
+                <td style="text-align: center;">
+                    {% if req.lab_incharge_status == 'Pending' %}
+                        <span class="text-warning">Pending</span>
+                    {% elif req.lab_incharge_status == 'Issued' %}
+                        <span class="text-success">Issued</span>
+                    {% else %}
+                        <span class="text-danger">Rejected</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
+                <td style="text-align: center;">
+                    <a href="{{ url_for('lab_incharge_edit_monthly_request', req_id=req.id) }}" class="btn btn-info btn-sm">Edit/Issue</a>
+                    <a href="{{ url_for('lab_incharge_print_monthly_request', req_id=req.id) }}" class="btn btn-primary btn-sm ms-2">Print</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">No monthly requests found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -16,19 +16,19 @@
     <table class="table table-bordered mt-4">
         <thead class="table-dark">
             <tr>
-                <th>Sr. No.</th>
-                <th>Requested on</th>
-                <th>AD Status</th>
-                <th>Stationary Incharge Status</th>
-                <th>Action</th>
+                <th style="text-align: center;">Sr. No.</th>
+                <th style="text-align: center;">Requested on</th>
+                <th style="text-align: center;">AD/Head Status</th>
+                <th style="text-align: center;">Lab Incharge Status</th>
+                <th style="text-align: center;">Action</th>
             </tr>
         </thead>
         <tbody>
             {% for req in requests %}
             <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
-                <td>
+                <td style="text-align: center;">{{ loop.index }}</td>
+                <td style="text-align: center;">{{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</td>
+                <td style="text-align: center;">
                     {% if  req.ad_status == 'Approved' %}  
                         <span class="text-success">Approved</span>
                     {% elif  req.ad_status == 'Rejected' %}  
@@ -37,8 +37,18 @@
                         <span class="text-warning">Pending</span>
                     {% endif %}
                 </td>
-                <td></td>
-                <td>
+                <td style="text-align: center;">
+                    {% if req.ad_status == 'Rejected' %}
+                        <span class="text-secondary">Rejected by AD/Head</span>
+                    {% elif req.lab_incharge_status == 'Pending' %}
+                        <span class="text-warning">Pending</span>
+                    {% elif req.lab_incharge_status == 'Issued' %}
+                        <span class="text-success">Issued</span>
+                    {% else %}
+                        <span class="text-danger">Rejected</span>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
                     <a href="/admin/monthly-request/{{ req.id }}" class="btn btn-sm btn-outline-primary">View/Print</a>
                     <a href="/admin/monthly-request/{{ req.id }}/edit" class="btn btn-sm btn-outline-warning">Edit</a>
                 </td>

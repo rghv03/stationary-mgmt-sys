@@ -10,27 +10,71 @@
                 </div>
                 <div class="card-body">
                     <form method="POST">
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label for="first_name" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" value="{{ user.first_name }}" required>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label for="middle_name" class="form-label">Middle Name</label>
+                                <input type="text" class="form-control" id="middle_name" name="middle_name" value="{{ user.middle_name }}">
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="last_name" class="form-label">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" value="{{ user.last_name }}" required>
+                        </div>
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}" required>
                         </div>
                          <div class="mb-3">
                             <label for="department" class="form-label">Department</label>
-                            <input type="text" class="form-control" id="department" name="department" value="{{ user.department }}" required>
+                            <select class="form-select" id="department_name" name="department_name" required>
+                                {% for dept in departments %}
+                                    <option value="{{ dept.shortname }}" {% if user.department_name == dept.shortname %}selected{% endif %}>{{ dept.shortname }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="designation" class="form-label">Designation</label>
-                            <input type="text" class="form-control" id="designation" name="designation" value="{{ user.designation }}" required>
+                            <select class="form-select" id="designation" name="designation" required>
+                                {% for des in designations %}
+                                    <option value="{{ des }}" {% if user.designation == des %}selected{% endif %}>{{ des }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role</label>
                             <select class="form-select" id="role" name="role" required>
-                                <option value="employee" {% if user.role == 'employee' %}selected{% endif %}>Employee</option>
-                                <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
-                                <option value="superadmin" {% if user.role == 'superadmin' %}selected{% endif %}>Superadmin</option>
+                                {% for r in roles %}
+                                    <option value="{{ r }}" {% if user.role == r %}selected{% endif %}>{{ r }}</option>
+                                {% endfor %}
                             </select>
                         </div>
-
+                        <div class="mb-3">
+                            <label for="add_roles" class="form-label">Assign Department Role</label>
+                            <select class="form-select" id="add_roles" name="add_roles">
+                                {% for ar in add_roles %}
+                                    <option value="{{ ar }}"
+                                        {% if ar == 'Group AD' and user.department and user.id == user.department.ad_id %}
+                                            selected
+                                        {% elif ar == 'Group Head' and user.department and user.id == user.department.head_id %}
+                                            selected
+                                        {% elif ar == 'None' and user.department and user.id != user.department.ad_id and user.id != user.department.head_id %}
+                                            selected
+                                        {% endif %}>
+                                    {{ ar }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% if user.role != 'superadmin' %}
+                        <div class="mb-3">
+                            <input type="checkbox" id="is_lab_stationary" name="is_lab_stationary"
+                                {% if user.is_lab_stationary %}checked{% endif %}>
+                            <label for="is_lab_stationary">Lab Stationary Incharge</label>
+                        </div>
+                        {% endif %}
                         <div class="d-grid">
                             <button type="submit" class="btn btn-primary">Update User</button>
                         </div>

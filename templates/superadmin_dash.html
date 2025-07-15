@@ -1,9 +1,36 @@
 {% extends 'base.html' %}
 {% block title %}Superadmin Dashboard{% endblock %}
 {% block body %}
-<h2 class="mt-5">Superadmin Dashboard</h2>
+<!--fading welcome superadmin title -->
+<style>
+    .fade-in-welcome {
+        opacity: 0;
+        transition: opacity 1.5s ease-in;
+        font-size: 2rem;
+        font-weight: 600;
+        text-align: left;
+        margin-top: 40px;
+        color: #000000;
+        letter-spacing: 1px;
+        font-family: inherit;
+    }
+    .fade-in-welcome.visible {
+        opacity: 1;
+    }
+</style>
+<div id="welcome-superadmin" class="fade-in-welcome mt-5">
+    Welcome, {{user.first_name}} {{user.middle_name}} {{user.last_name}}
+</div>
+<script>
+    window.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            document.getElementById('welcome-superadmin').classList.add('visible');
+        }, 200); 
+    });
+</script>
+
 <div class="row">
-    <div class="col-md-6 mt-5">
+    <div class="col-md-6 mt-4">
         <div class="card shadow">
             <div class="card-body">
                 <h5 class="card-title">Manage Users</h5>
@@ -12,11 +39,11 @@
             </div>
         </div>
     </div>
-    <div class="col-md-6 mt-5">
+    <div class="col-md-6 mt-4">
         <div class="card shadow">
             <div class="card-body">
-                <h5 class="card-title">View All Requests</h5>
-                <p class="card-text">Monitor all requests submitted by users.</p>
+                <h5 class="card-title">View All Urgent Requests</h5>
+                <p class="card-text">Monitor all urgent requests submitted by users.</p>
                 <a href="/manage_requests" class="btn btn-secondary">View Requests</a>
             </div>
         </div>

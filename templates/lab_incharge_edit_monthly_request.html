@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Edit/Issue Monthly Request{% endblock %}
+{% block body %}
+<div class="container mt-5">
+    <h2>Edit Monthly Request</h2>
+    <form method="POST">
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th style="text-align: center;">Sr. No.</th>
+                    <th style="text-align: center;">Name of Items</th>
+                    <th style="text-align: center;">Quantity Demanded</th>
+                    <th style="text-align: center;">Quantity Issued</th>
+                    <th style="text-align: center;">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in req.items %}
+                {% set safe_item = item.item.replace(' ', '_').replace('.', '').replace('-', '_') %}
+                <tr>
+                    <td style="text-align: center;">{{ loop.index }}</td>
+                    <td style="text-align: center;">{{ item.item }}</td>
+                    <td style="text-align: center;">{{ item.quantity }}</td>
+                    <td style="text-align: center;">
+                        <input type="number" name="qty_issued_{{ safe_item }}" value="{{ item.quantity_issued }}" placeholder="0" min="0" max="{{ item.quantity }}"  class="form-control" >
+                    </td>
+                    <td style="text-align: center;">{{ item.remarks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-success">Approve & Update</button>
+        <a href="/lab_incharge/monthly-requests" class="btn btn-secondary">Cancel</a>
+    </form>
+    {% if show_alert %}
+    <script>
+        alert("✅ Monthly Request Updated Successfully!!!");
+        window.location.href = '/lab_incharge/monthly-requests';
+    </script>
+    {% endif %}
+</div>
+{% endblock %}

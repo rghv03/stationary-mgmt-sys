@@ -3,27 +3,27 @@
 {% block body %}
 <div class="container mt-5">
     <h2>Monthly Request Details</h2>
-    <p><strong>Requested By:</strong> {{ user.username }}</p>
+    <p><strong>Requested By:</strong> {{ user.first_name }} {{ user.middle_name }} {{ user.last_name }}</p>
     <p><strong>Department:</strong> {{ req.department.shortname }}</p>
-    <p><strong>Date:</strong> {{ req.date_requested.strftime('%d-%m-%Y %H:%M') }}</p>
+    <p><strong>Requested on:</strong> {{ req.date_requested.strftime('%d-%m-%Y at %H:%M') }}</p>
     <p><strong>Status:</strong> {{ req.ad_status }}</p>
     <h4>Items Requested:</h4>
     <table class="table table-bordered">
-        <thead>
+        <thead class="table-dark">
             <tr>
-                <th>Sr. No.</th>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Remarks</th>
+                <th style="text-align: center;">Sr. No.</th>
+                <th style="text-align: center;">Item</th>
+                <th style="text-align: center;">Quantity</th>
+                <th style="text-align: center;">Remarks</th>
             </tr>
         </thead>
         <tbody>
             {% for item in req.items %}
             <tr>
-                <td>{{ loop.index }}</td>
-                <td>{{ item.item }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>{{ item.remarks }}</td>
+                <td style="text-align: center;">{{ loop.index }}</td>
+                <td style="text-align: center;">{{ item.item }}</td>
+                <td style="text-align: center;">{{ item.quantity }}</td>
+                <td style="text-align: center;">{{ item.remarks }}</td>
             </tr>
             {% endfor %}
         </tbody>
