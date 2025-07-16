@@ -4,15 +4,6 @@ from extensions import db
 
 ad_bp = Blueprint('ad', __name__)
 
-@ad_bp.context_processor
-def inject_is_ad_or_head():
-    user_id = session.get('user_id')
-    is_ad_or_head = False
-    if user_id:
-        is_ad_or_head = Department.query.filter(
-            (Department.head_id == user_id) | (Department.ad_id == user_id)
-        ).first() is not None
-    return dict(is_ad_or_head=is_ad_or_head)
 
 @ad_bp.route('/ad/monthly-requests')
 def ad_monthly_requests():

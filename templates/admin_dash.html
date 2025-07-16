@@ -40,7 +40,7 @@
 {% endif %}
 
 <div class="col-md-3 mt-5 align-self-end">
-    <a href="/admin/export?department_id={{selected_dept}}&date={{selected_date_str}}&status={{selected_status}}"
+    <a href="/admin/export?department={{selected_dept|default('')}}&date={{selected_date_str|default('')}}&status={{selected_status|default('')}}"
         class="btn btn-primary">
     Download Requests</a>
 

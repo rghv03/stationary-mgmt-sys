@@ -158,6 +158,12 @@ def export_requests():
     department_name = request.args.get('department')
     date_str = request.args.get('date')
     status = request.args.get('status')
+    if department_name in [None, '', 'None']:
+        department_name = None
+    if date_str in [None, '', 'None']:
+        date_str = None
+    if status in [None, '', 'None']:
+        status = None
     query = RequestModel.query.join(User).join(Department, User.department_name == Department.shortname)
     if department_name:
         query = query.filter(User.department_name == department_name)
