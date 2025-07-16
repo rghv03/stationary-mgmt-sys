@@ -1,6 +1,6 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, session
 from extensions import db, migrate
-from models import *
+from models import Department
 from routes.auth import auth_bp
 from routes.admin import admin_bp
 from routes.superadmin import superadmin_bp
@@ -30,6 +30,17 @@ def create_app():
     def home():
         return redirect('/login')
 
+    @app.context_processor
+    def inject_is_ad_or_head():
+            user_id = session.get('user_id')
+            is_ad_or_head = False
+            if user_id:
+                is_ad_or_head = Department.query.filter(
+                    (Department.head_id == user_id) | (Department.ad_id == user_id)
+                ).first() is not None
+            return dict(is_ad_or_head=is_ad_or_head)
+
+    
     return app
 app = create_app()
 if __name__ == "__main__":
